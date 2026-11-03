@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="./logo/ascend.svg" alt="Ascend logo" width="140" />
+<img src="./assets/logo/ascend-wt.png" alt="Ascend logo" width="430" />
 
-# Ascend
+<br>
 
 A gym management system designed to streamline gym operations, manage memberships, and support an organized fitness environment.
 
