@@ -12,12 +12,12 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('username')->unique();
+            $table->string('email')->nullable();
             $table->string('password');
             $table->enum('role', ['user', 'admin'])->default('user');
             $table->string('avatar_path')->nullable();
-            $table->json('tags')->nullable(); 
+            $table->json('tags')->nullable();
 
-      
             $table->unsignedInteger('current_streak')->default(0);
             $table->unsignedInteger('longest_streak')->default(0);
             $table->date('last_checked_in_at')->nullable();
@@ -26,7 +26,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-    
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('username')->primary();
             $table->string('token');
