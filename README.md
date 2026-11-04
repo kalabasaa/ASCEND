@@ -1,4 +1,4 @@
-<div align="center">
+ <div align="center">
 
 <img src="./public/assets/logo/ascend-wt2.png" alt="Ascend logo" width="430" />
 
@@ -8,6 +8,7 @@ A gym management system designed to streamline gym operations, manage membership
 
 ![Laravel](https://img.shields.io/badge/Laravel-Web%20Application-FF2D20?logo=laravel&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-Backend-777BB4?logo=php&logoColor=white)
+![Blade](https://img.shields.io/badge/Blade-Templating%20Engine-FF2D20?logo=laravel&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?logo=postgresql&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Web-0078D6?logo=googlechrome&logoColor=white)
 
@@ -35,6 +36,7 @@ The project is currently under development.
 <p align="left">
   <img src="https://img.shields.io/badge/Laravel-Framework-FF2D20?logo=laravel&logoColor=white" alt="Laravel"/>
   <img src="https://img.shields.io/badge/PHP-Backend-777BB4?logo=php&logoColor=white" alt="PHP"/>
+  <img src="https://img.shields.io/badge/Blade-Templating%20Engine-FF2D20?logo=laravel&logoColor=white" alt="Blade"/>
   <img src="https://img.shields.io/badge/PostgreSQL-Database-4169E1?logo=postgresql&logoColor=white" alt="PostgreSQL"/>
   <img src="https://img.shields.io/badge/HTML5-Markup-E34F26?logo=html5&logoColor=white" alt="HTML5"/>
   <img src="https://img.shields.io/badge/CSS3-Styling-1572B6?logo=css3&logoColor=white" alt="CSS3"/>
@@ -49,7 +51,7 @@ Ascend is actively being developed.
 
 - Initial project setup.
 - Initial logo and visual identity.
-- Database schema (users, subscriptions, check-ins, ratings, sales).
+- Database schema for users, subscriptions, check-ins, ratings, and sales.
 - Initial web application development.
 
 ### Planned
@@ -63,9 +65,16 @@ Ascend is actively being developed.
 
 The screenshots below show the application's current development progress.
 
+| Desktop | Mobile |
+|:---:|:---:|
+| **Login** | **Login** |
+| <img src="./public/assets/screenshots/desktop-login.png" width="600" alt="Desktop login"/> | <img src="./public/assets/screenshots/mobile-login.png" width="200" alt="Mobile login"/> |
+| **Register** | **Register** |
+| <img src="./public/assets/screenshots/desktop-register.png" width="600" alt="Desktop register"/> | <img src="./public/assets/screenshots/mobile-register.png" width="200" alt="Mobile register"/> |
+
 ## Developer
 
-### Renier Tambogon
+### Jhon Renier Tambogon
 
 **Lead Developer**
 
@@ -77,22 +86,23 @@ Responsible for the development, interface design, and implementation of the pro
 
 Reference for commit message prefixes used in this project.
 
-| Type       | When to use it                                   |
-|------------|---------------------------------------------------|
-| `feat`     | Add a new feature                                  |
-| `bugfix`   | Fix a bug                                          |
-| `refactor` | Improve code without changing behavior             |
-| `docs`     | Documentation changes                              |
-| `chore`    | Maintenance tasks                                  |
-| `style`    | Formatting only, no logic changes                  |
-| `test`     | Add or update tests                                |
-| `build`    | Build system or dependency configuration           |
-| `hotfix`   | Urgent fix for a production issue                  |
-| `perf`     | Improve performance                                |
-| `revert`   | Undo a previous commit                             |
+| Type | When to use it |
+|---|---|
+| `feat` | Add a new feature |
+| `bugfix` | Fix a bug |
+| `refactor` | Improve code without changing behavior |
+| `docs` | Documentation changes |
+| `chore` | Maintenance tasks |
+| `style` | Formatting only, no logic changes |
+| `test` | Add or update tests |
+| `build` | Build system or dependency configuration |
+| `hotfix` | Urgent fix for a production issue |
+| `perf` | Improve performance |
+| `revert` | Undo a previous commit |
 
-Example: `feat: add check-in streak tracking`
 
 ## License
 
-Licensing details will be added later.
+This project is licensed under the MIT License.
+
+Copyright (c) 2026 Jhon Renier Tambogon
