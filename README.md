@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./assets/logo/ascend-wt2.png" alt="Ascend logo" width="430" />
+<img src="./public/assets/logo/ascend-wt2.png" alt="Ascend logo" width="430" />
 
 <br>
 
