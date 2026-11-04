@@ -10,7 +10,7 @@ A gym management system designed to streamline gym operations, manage membership
 ![PHP](https://img.shields.io/badge/PHP-Backend-777BB4?logo=php&logoColor=white)
 ![Blade](https://img.shields.io/badge/Blade-Templating%20Engine-FF2D20?logo=laravel&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?logo=postgresql&logoColor=white)
-![Platform](https://img.shields.io/badge/Platform-Web-0078D6?logo=googlechrome&logoColor=white)
+![Platform](https://img.shields.io/badge/Web-Platform-0078D6?logo=googlechrome&logoColor=white)
 
 </div>
 
@@ -67,9 +67,7 @@ The screenshots below show the application's current development progress.
 
 | Desktop | Mobile |
 |:---:|:---:|
-| **Login** | **Login** |
 | <img src="./public/assets/screenshots/desktop-login.png" width="600" alt="Desktop login"/> | <img src="./public/assets/screenshots/mobile-login.png" width="200" alt="Mobile login"/> |
-| **Register** | **Register** |
 | <img src="./public/assets/screenshots/desktop-register.png" width="600" alt="Desktop register"/> | <img src="./public/assets/screenshots/mobile-register.png" width="200" alt="Mobile register"/> |
 
 ## Developer
