@@ -8,4 +8,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
 });
 
+Route::view('/terms', 'legal.terms')->name('terms');
+
 require __DIR__.'/settings.php';
