@@ -33,14 +33,22 @@ The project is currently under development.
 
 ## Technology Stack
 
+These are the technologies, frameworks, and development tools I use to build Ascend, from backend development and database management to frontend implementation, version control, and future deployment workflows.
+
 <p align="left">
   <img src="https://img.shields.io/badge/Laravel-Framework-FF2D20?logo=laravel&logoColor=white" alt="Laravel"/>
   <img src="https://img.shields.io/badge/PHP-Backend-777BB4?logo=php&logoColor=white" alt="PHP"/>
-  <img src="https://img.shields.io/badge/Blade-Templating%20Engine-FF2D20?logo=laravel&logoColor=white" alt="Blade"/>
   <img src="https://img.shields.io/badge/PostgreSQL-Database-4169E1?logo=postgresql&logoColor=white" alt="PostgreSQL"/>
-  <img src="https://img.shields.io/badge/HTML5-Markup-E34F26?logo=html5&logoColor=white" alt="HTML5"/>
-  <img src="https://img.shields.io/badge/CSS3-Styling-1572B6?logo=css3&logoColor=white" alt="CSS3"/>
+  <img src="https://img.shields.io/badge/Blade-Templating%20Engine-FF2D20?logo=laravel&logoColor=white" alt="Blade"/>
+  <img src="https://img.shields.io/badge/Vite-Build%20Tool-646CFF?logo=vite&logoColor=white" alt="Vite"/>
+  <img src="https://img.shields.io/badge/Tailwind%20CSS-Styling-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind CSS"/>
   <img src="https://img.shields.io/badge/JavaScript-Frontend-F7DF1E?logo=javascript&logoColor=black" alt="JavaScript"/>
+  <img src="https://img.shields.io/badge/Laravel%20Breeze-Authentication-FF2D20?logo=laravel&logoColor=white" alt="Laravel Breeze"/>
+  <img src="https://img.shields.io/badge/Laravel%20Fortify-Authentication-FF2D20?logo=laravel&logoColor=white" alt="Laravel Fortify"/>
+  <img src="https://img.shields.io/badge/Docker-Containerization-2496ED?logo=docker&logoColor=white" alt="Docker"/>
+  <img src="https://img.shields.io/badge/Git-Version%20Control-F05032?logo=git&logoColor=white" alt="Git"/>
+  <img src="https://img.shields.io/badge/GitHub-Repository-181717?logo=github&logoColor=white" alt="GitHub"/>
+  <img src="https://img.shields.io/badge/GitHub%20Actions-CI%20Pipeline-2088FF?logo=githubactions&logoColor=white" alt="GitHub Actions"/>
 </p>
 
 ## Project Status
