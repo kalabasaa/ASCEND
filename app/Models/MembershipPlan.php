@@ -17,6 +17,13 @@ class MembershipPlan extends Model
         'status',
     ];
 
+    protected function casts(): array
+{
+        return [
+            'price' => 'decimal:2',
+        ];
+    }
+
     public function trainer(): BelongsTo
     {
         return $this->belongsTo(Trainer::class);

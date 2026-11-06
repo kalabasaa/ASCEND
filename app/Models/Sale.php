@@ -16,7 +16,13 @@ class Sale extends Model
         'total_amount',
         'status',
     ];
-
+    protected function casts(): array
+    {
+        return [
+            'sale_date' => 'datetime',
+            'total_amount' => 'decimal:2',
+        ];
+    }
     public function member(): BelongsTo
     {
         return $this->belongsTo(Member::class);

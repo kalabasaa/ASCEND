@@ -17,6 +17,13 @@ class Product extends Model
         'status',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'price' => 'decimal:2',
+        ];
+    }
+
     public function soldProducts(): HasMany
     {
         return $this->hasMany(SoldProduct::class);

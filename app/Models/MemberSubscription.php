@@ -16,6 +16,14 @@ class MemberSubscription extends Model
         'amount',
         'status',
     ];
+    protected function casts(): array
+    {
+        return [
+            'start_date' => 'date',
+            'end_date' => 'date',
+            'amount' => 'decimal:2',
+        ];
+    }
 
     public function member(): BelongsTo
     {

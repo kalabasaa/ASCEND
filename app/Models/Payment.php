@@ -17,6 +17,14 @@ class Payment extends Model
         'reference_number',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'amount' => 'decimal:2',
+            'payment_date' => 'date',
+        ];
+    }
+
     public function subscription(): BelongsTo
     {
         return $this->belongsTo(MemberSubscription::class, 'subscription_id');
