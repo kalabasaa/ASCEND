@@ -10,11 +10,11 @@ return new class extends Migration
     {
         Schema::create('sales', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('subscription_id')->nullable()->constrained()->nullOnDelete();
-            $table->decimal('amount', 8, 2);
-            $table->string('type')->default('subscription'); 
-            $table->date('paid_at');
+            $table->foreignId('member_id')->nullable()->constrained('members')->restrictOnDelete();
+            $table->foreignId('user_id')->constrained('users')->restrictOnDelete();
+            $table->dateTime('sale_date');
+            $table->decimal('total_amount', 10, 2);
+            $table->enum('status', ['completed', 'cancelled'])->default('completed');
             $table->timestamps();
         });
     }
