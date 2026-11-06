@@ -4,24 +4,27 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Member;
+use App\Models\MemberSubscription;
 use App\Models\Product;
 use App\Models\Sale;
+use App\Models\Trainer;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // Core stats for dashboard cards
-        $totalMembers = Member::count();
-        $activeSubscriptions = Member::whereHas('subscriptions', fn ($q) => $q->where('status', 'active'))->count();
-        $totalSales = Sale::sum('total_amount');
-        $lowStockProducts = Product::whereColumn('stock_quantity', '<=', 'low_stock_threshold')->count();
-
-        return view('admin.dashboard.index', compact(
-            'totalMembers',
-            'activeSubscriptions',
-            'totalSales',
-            'lowStockProducts'
-        ));
+        return view('admin.dashboard', [
+            'stats' => [
+                'total_users' => User::count(),
+                'total_members' => Member::count(),
+                'active_subscriptions' => MemberSubscription::where('status', 'active')->count(),
+                'total_trainers' => Trainer::count(),
+                'total_products' => Product::count(),
+                'todays_sales' => Sale::whereDate('sale_date', today())->sum('total_amount'),
+            ],
+            'recentTransactions' => Sale::with(['member', 'user'])->latest('sale_date')->take(5)->get(),
+            'recentRegistrations' => Member::latest()->take(5)->get(),
+        ]);
     }
 }
