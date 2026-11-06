@@ -8,13 +8,16 @@ use Symfony\Component\HttpFoundation\Response;
 
 class UserMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  Closure(Request): (Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
+        if (! $request->user()) {
+            return redirect()->route('login');
+        }
+
+        if ($request->user()->role !== 'user') {
+            abort(403);
+        }
+
         return $next($request);
     }
 }
