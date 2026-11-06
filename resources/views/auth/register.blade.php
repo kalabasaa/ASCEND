@@ -35,42 +35,23 @@
     <form method="POST" action="{{ route('register') }}" class="auth-form-fields">
         @csrf
 
-        {{-- Full name + Username --}}
-        <div class="auth-row">
-            <div>
-                <label for="name" class="auth-label">{{ __('Full name') }}</label>
-                <input
-                    id="name"
-                    name="name"
-                    type="text"
-                    value="{{ old('name') }}"
-                    required
-                    autofocus
-                    autocomplete="name"
-                    placeholder="{{ __('Juan Dela Cruz') }}"
-                    class="auth-input"
-                >
-                @error('name')
-                    <p class="auth-error">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div>
-                <label for="username" class="auth-label">{{ __('Username') }}</label>
-                <input
-                    id="username"
-                    name="username"
-                    type="text"
-                    value="{{ old('username') }}"
-                    required
-                    autocomplete="username"
-                    placeholder="{{ __('yourusername') }}"
-                    class="auth-input"
-                >
-                @error('username')
-                    <p class="auth-error">{{ $message }}</p>
-                @enderror
-            </div>
+        {{-- Username --}}
+        <div>
+            <label for="username" class="auth-label">{{ __('Username') }}</label>
+            <input
+                id="username"
+                name="username"
+                type="text"
+                value="{{ old('username') }}"
+                required
+                autofocus
+                autocomplete="username"
+                placeholder="{{ __('yourusername') }}"
+                class="auth-input"
+            >
+            @error('username')
+                <p class="auth-error">{{ $message }}</p>
+            @enderror
         </div>
 
         {{-- Email address --}}
@@ -160,6 +141,14 @@
 
         {{-- Terms and Conditions --}}
         <x-terms-checkbox />
+
+        {{-- reCAPTCHA --}}
+        <div>
+            <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"></div>
+            @error('g-recaptcha-response')
+                <p class="auth-error">{{ $message }}</p>
+            @enderror
+        </div>
 
         <button type="submit" class="auth-btn-primary">
             {{ __('Continue') }}
