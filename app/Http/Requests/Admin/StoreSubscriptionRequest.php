@@ -2,28 +2,24 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreSubscriptionRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            //
+            'member_id' => 'required|exists:members,id',
+            'membership_plan_id' => 'required|exists:membership_plans,id',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
+            'amount' => 'required|numeric|min:0',
+            'status' => 'required|in:active,expired,cancelled',
         ];
     }
 }
