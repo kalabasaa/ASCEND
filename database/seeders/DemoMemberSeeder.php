@@ -2,51 +2,36 @@
 
 namespace Database\Seeders;
 
-use App\Models\Member;
 use App\Models\MembershipPlan;
-use App\Models\MemberSubscription;
-use App\Models\User;
+use App\Models\Trainer;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
-class DemoMemberSeeder extends Seeder
+class MembershipPlanSeeder extends Seeder
 {
     public function run(): void
     {
-        $plan = MembershipPlan::first();
+        $trainers = Trainer::pluck('id');
+        $first = $trainers->get(0);
 
-        $demoMembers = [
-            ['username' => 'juan_dc', 'first_name' => 'Juan', 'last_name' => 'Dela Cruz'],
-            ['username' => 'anna_m', 'first_name' => 'Anna', 'last_name' => 'Mendoza'],
+        $plans = [
+            // Your original plans
+            ['name' => 'Basic Monthly', 'duration_days' => 30, 'price' => 999.00],
+            ['name' => 'Premium Monthly', 'duration_days' => 30, 'price' => 1999.00],
+            ['name' => 'Annual', 'duration_days' => 365, 'price' => 14999.00],
+
+            // Extra plans
+            ['name' => 'Day Pass', 'duration_days' => 1, 'price' => 150.00, 'trainer_id' => null],
+            ['name' => 'Weekly Pass', 'duration_days' => 7, 'price' => 700.00, 'trainer_id' => null],
+            ['name' => 'Quarterly Strength', 'duration_days' => 90, 'price' => 5500.00, 'trainer_id' => $trainers->get(1)],
+            ['name' => 'Yoga & Mobility Monthly', 'duration_days' => 30, 'price' => 2200.00, 'trainer_id' => $trainers->get(2)],
+            ['name' => 'Legacy Student', 'duration_days' => 30, 'price' => 1000.00, 'trainer_id' => null, 'status' => 'inactive'],
         ];
 
-        foreach ($demoMembers as $demo) {
-            $user = User::firstOrCreate(
-                ['username' => $demo['username']],
-                [
-                    'email' => $demo['username'] . '@ascend.test',
-                    'password' => Hash::make('password'),
-                    'role' => 'user',
-                ]
+        foreach ($plans as $plan) {
+            MembershipPlan::firstOrCreate(
+                ['name' => $plan['name']],
+                $plan + ['trainer_id' => $first, 'status' => 'active']
             );
-
-            $member = $user->member()->firstOrCreate([], [
-                'first_name' => $demo['first_name'],
-                'last_name' => $demo['last_name'],
-                'gender' => 'unspecified',
-            ]);
-
-            if ($plan) {
-                MemberSubscription::firstOrCreate(
-                    ['member_id' => $member->id, 'membership_plan_id' => $plan->id],
-                    [
-                        'start_date' => now(),
-                        'end_date' => now()->addDays($plan->duration_days),
-                        'amount' => $plan->price,
-                        'status' => 'active',
-                    ]
-                );
-            }
         }
     }
 }
