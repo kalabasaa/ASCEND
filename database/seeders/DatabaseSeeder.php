@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
         // --- 15 member-linked user accounts ---
         $memberUsers = collect(range(1, 15))->map(function ($i) {
             return User::firstOrCreate(
-                ['username' => 'member' . $i],
+                ['username' => 'member'.$i],
                 [
                     'email' => "member{$i}@example.com",
                     'password' => Hash::make('Member@12345'),
@@ -54,8 +54,8 @@ class DatabaseSeeder extends Seeder
             $trainerIds[] = DB::table('trainers')->insertGetId([
                 'first_name' => $fn,
                 'last_name' => $ln,
-                'phone' => '09' . rand(100000000, 999999999),
-                'email' => strtolower($fn) . '.' . strtolower($ln) . '@gym.com',
+                'phone' => '09'.rand(100000000, 999999999),
+                'email' => strtolower($fn).'.'.strtolower($ln).'@gym.com',
                 'specialization' => collect(['Strength', 'Cardio', 'Yoga', 'CrossFit', 'Boxing'])->random(),
                 'status' => 'active',
                 'created_at' => now(),
@@ -75,7 +75,7 @@ class DatabaseSeeder extends Seeder
             $planIds[] = DB::table('membership_plans')->insertGetId([
                 'trainer_id' => collect($trainerIds)->random(),
                 'name' => $plan['name'],
-                'description' => $plan['name'] . ' membership package',
+                'description' => $plan['name'].' membership package',
                 'duration_days' => $plan['days'],
                 'price' => $plan['price'],
                 'status' => 'active',
@@ -90,14 +90,14 @@ class DatabaseSeeder extends Seeder
 
         $memberIds = [];
         foreach (range(0, 14) as $i) {
-            $memberId = 'M' . str_pad($i + 1, 4, '0', STR_PAD_LEFT);
+            $memberId = 'M'.str_pad($i + 1, 4, '0', STR_PAD_LEFT);
             $id = DB::table('members')->insertGetId([
                 'member_id' => $memberId,
                 'user_id' => $i < 10 ? $memberUsers[$i]->id : null, // first 10 linked, last 5 walk-in
                 'first_name' => $firstNames[$i],
                 'last_name' => $lastNames[$i],
-                'phone' => '09' . rand(100000000, 999999999),
-                'address' => rand(1, 999) . ' Sample St., Urdaneta City',
+                'phone' => '09'.rand(100000000, 999999999),
+                'address' => rand(1, 999).' Sample St., Urdaneta City',
                 'gender' => collect(['male', 'female'])->random(),
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -107,7 +107,9 @@ class DatabaseSeeder extends Seeder
 
         // --- Subscriptions (most members get one active subscription) ---
         foreach ($memberIds as $i => $memberId) {
-            if ($i % 4 === 3) continue; // leave a few members without subscriptions
+            if ($i % 4 === 3) {
+                continue;
+            } // leave a few members without subscriptions
 
             $planId = collect($planIds)->random();
             $start = now()->subDays(rand(0, 60));
@@ -139,7 +141,7 @@ class DatabaseSeeder extends Seeder
         foreach ($productList as [$name, $cat, $price, $stock]) {
             $productIds[] = DB::table('products')->insertGetId([
                 'name' => $name,
-                'description' => $name . ' — gym store item',
+                'description' => $name.' — gym store item',
                 'category' => $cat,
                 'price' => $price,
                 'stock_quantity' => $stock,

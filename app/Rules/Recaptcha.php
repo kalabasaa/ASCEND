@@ -25,6 +25,7 @@ class Recaptcha implements ValidationRule
 
         if (! $value) {
             $fail('Please complete the reCAPTCHA challenge.');
+
             return;
         }
 

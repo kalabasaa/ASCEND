@@ -1,5 +1,21 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\MemberController;
+use App\Http\Controllers\Admin\MembershipPlanController;
+use App\Http\Controllers\Admin\PaymentController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\SaleController;
+use App\Http\Controllers\Admin\SubscriptionController;
+use App\Http\Controllers\Admin\TrainerController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\VisitController;
+use App\Http\Controllers\User\MembershipController;
+use App\Http\Controllers\User\ProfileController;
+use App\Http\Controllers\User\ShopController;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
 // Public
@@ -9,14 +25,14 @@ Route::view('/terms', 'legal.terms')->name('terms');
 Route::get('/dev-login', function () {
     abort_unless(app()->environment('local'), 404);
 
-    $user = \App\Models\User::firstOrNew(['username' => 'admin.renier']);
+    $user = User::firstOrNew(['username' => 'admin.renier']);
     $user->forceFill([
         'email' => 'admin.renier@gmail.com',
-        'password' => \Illuminate\Support\Facades\Hash::make('Admin@12345'),
+        'password' => Hash::make('Admin@12345'),
         'role' => 'admin',
     ])->save();
 
-    \Illuminate\Support\Facades\Auth::login($user, true);
+    Auth::login($user, true);
 
     return redirect('/admin/dashboard');
 });
@@ -38,38 +54,37 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // Admin only
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::resource('members', App\Http\Controllers\Admin\MemberController::class);
-    Route::resource('trainers', App\Http\Controllers\Admin\TrainerController::class);
-    Route::resource('plans', App\Http\Controllers\Admin\MembershipPlanController::class);
-    Route::resource('products', App\Http\Controllers\Admin\ProductController::class);
+    Route::resource('members', MemberController::class);
+    Route::resource('trainers', TrainerController::class);
+    Route::resource('plans', MembershipPlanController::class);
+    Route::resource('products', ProductController::class);
 
-    Route::resource('sales', App\Http\Controllers\Admin\SaleController::class)->only(['index', 'create', 'store', 'destroy']);
+    Route::resource('sales', SaleController::class)->only(['index', 'create', 'store', 'destroy']);
     // Subscription creation only — no index/edit per original scope
-    Route::post('subscriptions', [App\Http\Controllers\Admin\SubscriptionController::class, 'store'])->name('subscriptions.store');
-    Route::resource('payments', App\Http\Controllers\Admin\PaymentController::class)->only(['index', 'create', 'store']);
-    Route::resource('visits', App\Http\Controllers\Admin\VisitController::class)->only(['index']);
-    Route::resource('users', App\Http\Controllers\Admin\UserController::class)->only(['index', 'edit', 'update', 'destroy']);
+    Route::post('subscriptions', [SubscriptionController::class, 'store'])->name('subscriptions.store');
+    Route::resource('payments', PaymentController::class)->only(['index', 'create', 'store']);
+    Route::resource('visits', VisitController::class)->only(['index']);
+    Route::resource('users', UserController::class)->only(['index', 'edit', 'update', 'destroy']);
 });
 
 // Member only
 Route::middleware(['auth', 'verified', 'user'])->prefix('member')->name('user.')->group(function () {
     Route::get('dashboard', [App\Http\Controllers\User\DashboardController::class, 'index'])->name('dashboard');
-    Route::get('membership', [App\Http\Controllers\User\MembershipController::class, 'index'])->name('membership');
+    Route::get('membership', [MembershipController::class, 'index'])->name('membership');
 
-    Route::get('shop', [App\Http\Controllers\User\ShopController::class, 'index'])->name('shop.index');
-    Route::get('shop/{product}', [App\Http\Controllers\User\ShopController::class, 'show'])->name('shop.show');
+    Route::get('shop', [ShopController::class, 'index'])->name('shop.index');
+    Route::get('shop/{product}', [ShopController::class, 'show'])->name('shop.show');
 
     Route::get('visits', [App\Http\Controllers\User\VisitController::class, 'index'])->name('visits');
     // Check-in action — one per day, enforced in the controller
     Route::post('visits/check-in', [App\Http\Controllers\User\VisitController::class, 'store'])->name('visits.store');
 
     // Read-only account summary page
-    Route::get('profile', [App\Http\Controllers\User\ProfileController::class, 'index'])->name('profile.index');
-    Route::get('profile/edit', [App\Http\Controllers\User\ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('profile', [App\Http\Controllers\User\ProfileController::class, 'update'])->name('profile.update');
+    Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::get('profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('profile', [ProfileController::class, 'update'])->name('profile.update');
 });
-
 
 require __DIR__.'/settings.php';

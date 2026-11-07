@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -35,9 +34,7 @@ use Illuminate\Support\Str;
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable
 {
-    
     use HasFactory, Notifiable;
-
 
     protected function casts(): array
     {
@@ -48,7 +45,6 @@ class User extends Authenticatable
         ];
     }
 
-   
     // Get the user's initials
 
     public function initials(): string

@@ -13,7 +13,6 @@ return new class extends Migration
             $table->foreignId('member_id')->constrained('members')->restrictOnDelete();
             $table->dateTime('check_in');
             $table->date('visit_date')->storedAs('DATE(check_in)');
-          
 
             $table->unique(['member_id', 'visit_date']);
         });

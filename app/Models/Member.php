@@ -21,7 +21,7 @@ class Member extends Model
     protected static function booted(): void
     {
         static::created(function (Member $member) {
-            $member->saveQuietly(['member_id' => 'ASC-' . $member->id]);
+            $member->saveQuietly(['member_id' => 'ASC-'.$member->id]);
         });
     }
 

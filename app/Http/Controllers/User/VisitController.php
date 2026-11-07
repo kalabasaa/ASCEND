@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\GymVisit;
+use Illuminate\Database\QueryException;
 
 class VisitController extends Controller
 {
@@ -25,7 +26,7 @@ class VisitController extends Controller
 
         try {
             GymVisit::create(['member_id' => $member->id, 'check_in' => now()]);
-        } catch (\Illuminate\Database\QueryException $e) {
+        } catch (QueryException $e) {
             return back()->with('error', 'Already checked in today.');
         }
 

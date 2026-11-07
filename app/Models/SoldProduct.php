@@ -22,7 +22,7 @@ class SoldProduct extends Model
             'subtotal' => 'decimal:2',
         ];
     }
-    
+
     public function sale(): BelongsTo
     {
         return $this->belongsTo(Sale::class);
