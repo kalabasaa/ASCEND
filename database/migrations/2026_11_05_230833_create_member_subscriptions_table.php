@@ -8,16 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('members', function (Blueprint $table) {
-            // Allow null so the model event can populate it post-insert
-            $table->string('member_id')->nullable()->change();
+        Schema::create('member_subscriptions', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('member_id')->constrained('members')->restrictOnDelete();
+            $table->foreignId('membership_plan_id')->constrained('membership_plans')->restrictOnDelete();
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->enum('status', ['active', 'expired', 'cancelled'])->default('active');
+            $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::table('members', function (Blueprint $table) {
-            $table->string('member_id')->nullable(false)->change();
-        });
+        Schema::dropIfExists('member_subscriptions');
     }
 };
