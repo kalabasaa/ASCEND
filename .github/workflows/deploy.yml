@@ -36,14 +36,15 @@ jobs:
         run: |
           mkdir -p deploy
 
+          # Leading "/" anchors each pattern to the project root
           rsync -a \
-            --exclude='.git' \
-            --exclude='.github' \
-            --exclude='node_modules' \
-            --exclude='tests' \
-            --exclude='deploy' \
-            --exclude='public' \
-            --exclude='.env' \
+            --exclude='/.git' \
+            --exclude='/.github' \
+            --exclude='/node_modules' \
+            --exclude='/tests' \
+            --exclude='/deploy' \
+            --exclude='/public' \
+            --exclude='/.env' \
             ./ deploy/
 
           # public/ contents become the web root
@@ -77,7 +78,7 @@ jobs:
 
       - name: Write production .env
         run: |
-          cat > deploy/.env << EOF
+          cat > deploy/.env << 'EOF'
           APP_NAME=Ascend
           APP_ENV=production
           APP_KEY="${{ secrets.APP_KEY }}"
@@ -100,6 +101,15 @@ jobs:
           RECAPTCHA_SECRET_KEY="${{ secrets.RECAPTCHA_SECRET_KEY }}"
           EOF
 
+      - name: Sanity check build output
+        run: |
+          test -f deploy/index.php
+          test -f deploy/vendor/autoload.php
+          test -f deploy/bootstrap/app.php
+          test -f deploy/build/manifest.json
+          test -f deploy/.env
+          test -f deploy/.htaccess
+
       - name: Deploy to InfinityFree via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -108,7 +118,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./deploy/
           server-dir: ./htdocs/
+          timeout: 120000
           exclude: |
             **/.git*
             **/.git*/**
-            !**/.htaccess
