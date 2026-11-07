@@ -32,21 +32,10 @@ jobs:
           npm ci
           npm run build
 
-      - name: Cache Laravel config and routes
-        run: |
-          php artisan config:cache
-          php artisan route:cache
-
-      # InfinityFree serves htdocs/ directly as the web root, but Laravel
-      # expects the webroot to be the public/ folder. This step builds a
-      # "deploy" directory shaped the way InfinityFree needs: public/'s
-      # contents become the root, and index.php's require paths are fixed
-      # to match (one directory level shallower than normal).
       - name: Restructure for InfinityFree htdocs layout
         run: |
           mkdir -p deploy
 
-          # Copy everything except what InfinityFree doesn't need / shouldn't get
           rsync -a \
             --exclude='.git' \
             --exclude='.github' \
@@ -54,46 +43,61 @@ jobs:
             --exclude='tests' \
             --exclude='deploy' \
             --exclude='public' \
+            --exclude='.env' \
             ./ deploy/
 
-          # Move public/'s contents (built assets + index.php) into deploy root
+          # public/ contents become the web root
           cp -a public/. deploy/
 
-          # Fix index.php's require paths: since index.php now lives at the
-          # project root instead of public/, drop the leading "../"
-          sed -i "s#__DIR__.'/../vendor/autoload.php'#__DIR__.'/vendor/autoload.php'#g" deploy/index.php
-          sed -i "s#__DIR__.'/../bootstrap/app.php'#__DIR__.'/bootstrap/app.php'#g" deploy/index.php
-          sed -i "s#\$maintenance = __DIR__.'/../storage/framework/maintenance.php'#\$maintenance = __DIR__.'/storage/framework/maintenance.php'#g" deploy/index.php
+          # index.php now sits one level higher, so drop the "../"
+          sed -i "s#__DIR__\.'/\.\./#__DIR__.'/#g" deploy/index.php
+          grep -n "__DIR__" deploy/index.php
 
-          # Keep real .env off the server; InfinityFree env vars are set
-          # directly in deploy/.env in the FTP step's secret-driven copy below.
-          rm -f deploy/.env
+          # FTP skips empty folders, so give Laravel's writable folders a file
+          mkdir -p deploy/storage/framework/{cache/data,sessions,views} deploy/storage/logs deploy/bootstrap/cache
+          touch deploy/storage/framework/cache/data/.keep \
+                deploy/storage/framework/sessions/.keep \
+                deploy/storage/framework/views/.keep \
+                deploy/storage/logs/.keep \
+                deploy/bootstrap/cache/.keep
 
-      # Writes a production .env using GitHub Secrets, so no credentials
-      # ever live in this repo or in this workflow file itself.
+          # Block web access to everything that is not public
+          cat > deploy/.htaccess.new << 'EOF'
+          <FilesMatch "^\.(env|git)">
+              Require all denied
+          </FilesMatch>
+          <IfModule mod_rewrite.c>
+              RewriteEngine On
+              RewriteRule ^(app|bootstrap|config|database|resources|routes|storage|vendor|tests)(/|$) - [F,L]
+              RewriteRule ^(artisan|composer\.json|composer\.lock|package\.json|\.env.*)$ - [F,L]
+          </IfModule>
+          EOF
+          cat deploy/.htaccess >> deploy/.htaccess.new
+          mv deploy/.htaccess.new deploy/.htaccess
+
       - name: Write production .env
         run: |
           cat > deploy/.env << EOF
           APP_NAME=Ascend
           APP_ENV=production
-          APP_KEY=${{ secrets.APP_KEY }}
+          APP_KEY="${{ secrets.APP_KEY }}"
           APP_DEBUG=false
-          APP_URL=${{ secrets.APP_URL }}
+          APP_URL="${{ secrets.APP_URL }}"
 
           DB_CONNECTION=mysql
-          DB_HOST=${{ secrets.DB_HOST }}
+          DB_HOST="${{ secrets.DB_HOST }}"
           DB_PORT=3306
-          DB_DATABASE=${{ secrets.DB_DATABASE }}
-          DB_USERNAME=${{ secrets.DB_USERNAME }}
-          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          DB_DATABASE="${{ secrets.DB_DATABASE }}"
+          DB_USERNAME="${{ secrets.DB_USERNAME }}"
+          DB_PASSWORD="${{ secrets.DB_PASSWORD }}"
 
           SESSION_DRIVER=file
           CACHE_STORE=file
           QUEUE_CONNECTION=sync
           FILESYSTEM_DISK=local
 
-          RECAPTCHA_SITE_KEY=${{ secrets.RECAPTCHA_SITE_KEY }}
-          RECAPTCHA_SECRET_KEY=${{ secrets.RECAPTCHA_SECRET_KEY }}
+          RECAPTCHA_SITE_KEY="${{ secrets.RECAPTCHA_SITE_KEY }}"
+          RECAPTCHA_SECRET_KEY="${{ secrets.RECAPTCHA_SECRET_KEY }}"
           EOF
 
       - name: Deploy to InfinityFree via FTP
@@ -107,3 +111,4 @@ jobs:
           exclude: |
             **/.git*
             **/.git*/**
+            !**/.htaccess
