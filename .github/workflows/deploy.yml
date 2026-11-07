@@ -1,0 +1,110 @@
+name: Build and Deploy to InfinityFree
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo, pdo_mysql, zip, exif, pcntl, gd
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Composer dependencies
+        run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
+      - name: Install NPM dependencies and build assets
+        run: |
+          npm ci
+          npm run build
+
+      - name: Cache Laravel config and routes
+        run: |
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+
+      # InfinityFree serves htdocs/ directly as the web root, but Laravel
+      # expects the webroot to be the public/ folder. This step builds a
+      # "deploy" directory shaped the way InfinityFree needs: public/'s
+      # contents become the root, and index.php's require paths are fixed
+      # to match (one directory level shallower than normal).
+      - name: Restructure for InfinityFree htdocs layout
+        run: |
+          mkdir -p deploy
+
+          # Copy everything except what InfinityFree doesn't need / shouldn't get
+          rsync -a \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='node_modules' \
+            --exclude='tests' \
+            --exclude='deploy' \
+            --exclude='public' \
+            ./ deploy/
+
+          # Move public/'s contents (built assets + index.php) into deploy root
+          cp -a public/. deploy/
+
+          # Fix index.php's require paths: since index.php now lives at the
+          # project root instead of public/, drop the leading "../"
+          sed -i "s#__DIR__.'/../vendor/autoload.php'#__DIR__.'/vendor/autoload.php'#g" deploy/index.php
+          sed -i "s#__DIR__.'/../bootstrap/app.php'#__DIR__.'/bootstrap/app.php'#g" deploy/index.php
+          sed -i "s#\$maintenance = __DIR__.'/../storage/framework/maintenance.php'#\$maintenance = __DIR__.'/storage/framework/maintenance.php'#g" deploy/index.php
+
+          # Keep real .env off the server; InfinityFree env vars are set
+          # directly in deploy/.env in the FTP step's secret-driven copy below.
+          rm -f deploy/.env
+
+      # Writes a production .env using GitHub Secrets, so no credentials
+      # ever live in this repo or in this workflow file itself.
+      - name: Write production .env
+        run: |
+          cat > deploy/.env << EOF
+          APP_NAME=Ascend
+          APP_ENV=production
+          APP_KEY=${{ secrets.APP_KEY }}
+          APP_DEBUG=false
+          APP_URL=${{ secrets.APP_URL }}
+
+          DB_CONNECTION=mysql
+          DB_HOST=${{ secrets.DB_HOST }}
+          DB_PORT=3306
+          DB_DATABASE=${{ secrets.DB_DATABASE }}
+          DB_USERNAME=${{ secrets.DB_USERNAME }}
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+
+          SESSION_DRIVER=file
+          CACHE_STORE=file
+          QUEUE_CONNECTION=sync
+          FILESYSTEM_DISK=local
+
+          RECAPTCHA_SITE_KEY=${{ secrets.RECAPTCHA_SITE_KEY }}
+          RECAPTCHA_SECRET_KEY=${{ secrets.RECAPTCHA_SECRET_KEY }}
+          EOF
+
+      - name: Deploy to InfinityFree via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./deploy/
+          server-dir: ./htdocs/
+          exclude: |
+            **/.git*
+            **/.git*/**
