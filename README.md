@@ -88,24 +88,6 @@ Responsible for the development, interface design, and implementation of the pro
 
 **GitHub:** [kalabasaa](https://github.com/kalabasaa)
 
-## Commit Convention
-
-Reference for commit message prefixes used in this project.
-
-| Type | When to use it |
-|---|---|
-| `feat` | Add a new feature |
-| `bugfix` | Fix a bug |
-| `refactor` | Improve code without changing behavior |
-| `docs` | Documentation changes |
-| `chore` | Maintenance tasks |
-| `style` | Formatting only, no logic changes |
-| `test` | Add or update tests |
-| `build` | Build system or dependency configuration |
-| `hotfix` | Urgent fix for a production issue |
-| `perf` | Improve performance |
-| `revert` | Undo a previous commit |
-
 
 ## License
 
